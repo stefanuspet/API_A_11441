@@ -36,23 +36,37 @@ class ActivitiesController extends Controller
     public function store(Request $request)
     {
         $storeData = $request->all();
+
         $validate = Validator::make($storeData, [
             'id_user' => 'required',
             'id_content' => 'required',
-            'accessed_at' => 'required|date',
         ]);
+
         if ($validate->fails())
             return response(['message' => $validate->errors()], 400);
-        
+
+        $storeData['accessed_at'] = now();
         $user = User::find($storeData['id_user']);
+
         if (!$user) {
             return response(['message' => 'User not found'], 400);
         }
+
         $content = Content::find($storeData['id_content']);
+
         if (!$content) {
             return response(['message' => 'Content not found'], 400);
         }
+
+        if ($user->status == 0) {
+            $content = Content::find($storeData['id_content']);
+            if ($content->type == 'Paid') {
+                return response(['message' => 'Cant Create Activities !'], 400);
+            }
+        }
+
         $activities = Activities::create($storeData);
+
         return response([
             'message' => $user->name . ' accessed ' . $content->title . ' at ' . $activities['accessed_at'] . '.', 'data' => $activities
         ], 200);
@@ -129,10 +143,10 @@ class ActivitiesController extends Controller
             return response([
                 'message' => 'Delete Activities Success', 'data' => $activities
             ], 200);
-            return response([
-                'message' => 'Delete Activities Failed',
-                'data' => null
-            ], 400);
         }
+        return response([
+            'message' => 'Delete Activities Failed',
+            'data' => null
+        ], 400);
     }
 }

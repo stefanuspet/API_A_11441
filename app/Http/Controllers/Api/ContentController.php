@@ -6,7 +6,7 @@ use App\Http\Controllers\Controller;
 use Illuminate\Http\Request;
 use App\Models\Content;
 use Illuminate\Support\Facades\Validator;
-use Illuminate\Support\Facades\Rule;
+use Illuminate\Validation\Rule;
 
 class ContentController extends Controller
 {
@@ -40,7 +40,7 @@ class ContentController extends Controller
             'title' => 'required|max:60',
             'released_year' => 'required',
             'genre' => 'required',
-            'type' => 'required',
+            'type' => ['required', Rule::in(['Free', 'Paid'])],
         ]);
         if ($validate->fails())
             return response(['message' => $validate->errors()], 400);
@@ -88,7 +88,7 @@ class ContentController extends Controller
             'title' => 'required|max:60',
             'released_year' => 'required',
             'genre' => 'required',
-            'type' => 'required'
+            'type' => ['required', Rule::in(['Free', 'Paid'])],
         ]);
         if ($validate->fails())
             return response(['message' => $validate->errors()], 400);

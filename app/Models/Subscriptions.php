@@ -5,23 +5,22 @@ namespace App\Models;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
 
-class Activities extends Model
+class Subscriptions extends Model
 {
     use HasFactory;
     public $timestamps = false;
-    protected $table = 'activities';
+    protected $table = 'subscriptions';
     protected $primaryKey = 'id';
+
     protected $fillable = [
         'id_user',
-        'id_content',
+        'category',
+        'price',
+        'transaction_date'
     ];
 
     public function User()
     {
         return $this->belongsTo(User::class, 'id_user');
-    }
-    public function Content()
-    {
-        return $this->belongsTo(Content::class, 'id_content');
     }
 }
